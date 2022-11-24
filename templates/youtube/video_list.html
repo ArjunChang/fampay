@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar bg-secondary text-uppercase fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="#page-top" style="color: black">FAMPAY-YT</a>
+            </div>
+            <form class="form-inline my-2 my-lg-0" method="get" action="">
+                <input type="hidden" name="order_by" value="{{ request.GET.order_by }}">
+                <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </nav>
+        <!-- Portfolio Section-->
+        <section class="page-section">
+            <div class="container" style="margin-top: 100px">
+                <!-- Portfolio Grid Items-->
+                <section style="margin: 10px">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</section>
+                <table class="table table-striped">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">
+                      <a href="?order_by={% if request.GET.order_by == 'title' %}-{% endif %}title&search={{ request.GET.search }}">
+                          Title <i class='fas fa-sort-alpha-up' style='font-size:14px'></i>
+                      </a>
+                  </th>
+                  <th scope="col" nowrap="nowrap">
+                      <a href="?order_by={% if request.GET.order_by == 'channel' %}-{% endif %}channel&search={{ request.GET.search }}">
+                          Channel <i class='fas fa-sort-alpha-up' style='font-size:14px'></i>
+                      </a>
+                  </th>
+                  <th scope="col">Description</th>
+                  <th scope="col" nowrap="nowrap">
+                      <a href="?order_by={% if request.GET.order_by == 'published_at' %}-{% endif %}published_at&search={{ request.GET.search }}">
+                          Published At <i class='fas fa-sort-alpha-up' style='font-size:14px'></i>
+                      </a>
+                  </th>
+                  <th scope="col">Thumbnail Url</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for object in object_list %}
+                <tr>
+                  <th scope="row">{{ object.title }}</th>
+                  <td>{{ object.channel }}</td>
+                  <td>{{ object.description }}</td>
+                  <td>{{ object.published_at }}</td>
+                  <td><a href="{{ object.thumbnail_url }}"> Link </a></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            </div>
+            <div class="container">
+                <div class="row">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}">
+                            <div class="col-md">
+                                <button type="button" class="btn btn-primary">Previous</button>
+                            </div>
+                        </a>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">
+                            <div class="col-md">
+                                <button type="button" class="btn btn-primary">Next</button>
+                            </div>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

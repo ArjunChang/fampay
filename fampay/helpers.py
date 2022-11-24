@@ -10,6 +10,6 @@ def process_youtube_response(results):
             description=snippet['description'],
             channel=snippet['channelTitle'],
             published_at=snippet['publishTime'],
-            thumbnail_url=snippet['thumbnails']['high'],
+            thumbnail_url=snippet['thumbnails']['high']['url'],
         )
         print("Done Updating DB!")

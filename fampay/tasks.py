@@ -18,8 +18,10 @@ def fetch_youtube_videos():
                 search_response = youtube.search().list(
                     q='cats',
                     type='video',
+                    order='date',
                     part='id,snippet',
-                    maxResults=5
+                    maxResults=5,
+                    publishedAfter="2022-01-01T00:00:00.000+00:00"
                 ).execute()
                 results = search_response['items']
                 process_youtube_response(results)

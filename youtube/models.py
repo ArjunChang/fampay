@@ -10,3 +10,7 @@ class Video(models.Model):
     channel = models.CharField(max_length=30)
     published_at = models.DateTimeField()
     thumbnail_url = models.URLField()
+
+
+class YouTubeAPIKey(models.Model):
+    api_key = models.CharField(max_length=40, unique=True)

@@ -2,24 +2,29 @@ from time import sleep
 
 from celery import shared_task
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 from fampay.helpers import process_youtube_response
-
-KEY = 'AIzaSyD047QAtGwkA7mcShbSs2ExJw7a42gFHGY'
+from youtube.models import YouTubeAPIKey
 
 
 @shared_task()
 def fetch_youtube_videos():
-    youtube = build('youtube', 'v3', developerKey=KEY)
-    while True:
-        search_response = youtube.search().list(
-            q='cats',
-            type='video',
-            part='id,snippet',
-            maxResults=5
-        ).execute()
-        results = search_response['items']
-        process_youtube_response(results)
+    api_keys = YouTubeAPIKey.objects.all()
+    for api_key in api_keys:
+        try:
+            youtube = build('youtube', 'v3', developerKey=api_key.api_key)
+            while True:
+                search_response = youtube.search().list(
+                    q='cats',
+                    type='video',
+                    part='id,snippet',
+                    maxResults=5
+                ).execute()
+                results = search_response['items']
+                process_youtube_response(results)
 
-        sleep(120)
+                sleep(120)
 
+        except HttpError:
+            continue

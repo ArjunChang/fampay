@@ -6,5 +6,9 @@ class YoutubeConfig(AppConfig):
     name = 'youtube'
 
     def ready(self):
+        """
+        Start the task only after the models have been rendered
+        :return:
+        """
         from fampay.tasks import fetch_youtube_videos
         fetch_youtube_videos.delay()

@@ -10,6 +10,7 @@ from youtube.models import YouTubeAPIKey
 
 @shared_task()
 def fetch_youtube_videos():
+    # Use multiple api keys to overcome quota exceeded error
     api_keys = YouTubeAPIKey.objects.all()
     for api_key in api_keys:
         try:
@@ -26,6 +27,7 @@ def fetch_youtube_videos():
                 results = search_response['items']
                 process_youtube_response(results)
 
+                # Wait for 2min and try again
                 sleep(120)
 
         except HttpError:

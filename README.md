@@ -9,36 +9,45 @@ Built with Python (Django)
 
 1. Clone the repo
    ```sh
-   git clone git@github.com:ArjunChang/fampay.git
-   cd fampay
+   $ git clone git@github.com:ArjunChang/fampay.git
+   $ cd fampay
    ```
 2. Create a Virtual Environment
    ```sh
-   python3 -m venv fampay-venv
+   $ python3 -m venv fampay-venv
    ```
 3. Install all packages
    ```sh
-   pip install -r requirements.txt
+   $ pip install -r requirements.txt
    ```
-4. Create superuser
+4. Setup Postgres DB
    ```sh
-   pyhton manage.py createsuperuser
+   $ sudo -u postgres createuser fampay
+   $ sudo -u postgres createdb fampaydb
+   $ sudo -u postgres psql
+   postgres=# alter user fampay with encrypted password 'fampay123' ;
+   postgres=# grant all privileges on database fampaydb to fampay ;
+   postgres=# \q
    ```
-5. Run the server
+5. Install and run redis: [Redis Installation and Setup Guide](https://redis.io/docs/getting-started/installation/)
+6. Create superuser
    ```sh
-   python manage.py runserver
+   $ pyhton manage.py createsuperuser
    ```
-6. Login to Django Admin and add API Keys in `admin/youtube/youtubeapikey/`
-7. Install and Start Redis: [Redis Installation and Setup Guide](https://redis.io/docs/getting-started/installation/)
-8. Run Celery
+7. Run the server
    ```sh
-   python -m celery -A fampay worker -l info
+   $ python manage.py runserver
    ```
-9. Visit `http://localhost:8000/youtube/list` and browse!
+8. Login to Django Admin and add API Keys in `admin/youtube/youtubeapikey/`
+9. Run Celery
+   ```sh
+   $ python -m celery -A fampay worker -l info
+   ```
+10. Visit `http://localhost:8000/youtube/list` and browse!
 
 ### Usage
 1. `youtube/list` lists out all the database entries in a paginated manner
-2. You can search for title in the `nav-bar` or append query parameter `?search=<your-search>`, this will filter out entries that contains your search words
+2. You can search for title/description in the `nav-bar` or append query parameter `?search=<your-search>`, this will filter out entries that contains your search words
 3. You can sort the entries based on Title, Channel or Published Time by clicking on the respective headers
 
 

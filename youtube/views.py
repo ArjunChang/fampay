@@ -1,6 +1,7 @@
 from django.views.generic import ListView
 
 from youtube.models import Video
+from django.db.models import Q
 
 
 class YouTubeVideoView(ListView):
@@ -17,6 +18,6 @@ class YouTubeVideoView(ListView):
         if search:
             search_words = search.split(' ')
             for word in search_words:
-                queryset = queryset.filter(title__contains=word)
+                queryset = queryset.filter(Q(title__icontains=word) | Q(description__icontains=word))
 
         return queryset

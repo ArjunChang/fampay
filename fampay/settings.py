@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'youtube'
+    'django_celery_beat',
+    'youtube',
 ]
 
 MIDDLEWARE = [
@@ -73,14 +77,14 @@ WSGI_APPLICATION = 'fampay.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
+"redis://localhost:6379"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'fampaydb',
         'USER': 'fampay',
         'PASSWORD': 'fampay123',
-        'HOST': '127.0.0.1',
+        'HOST': 'pgdb',
         'PORT': '5432',
 
     }
@@ -130,5 +134,16 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery settings
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_IMPORTS = [
+    'fampay.tasks'
+]
+
+
+CELERY_BEAT_SCHEDULE = {
+ 'fetch_videos_every_2_min': {
+       'task': 'fampay.tasks.fetch_youtube_videos',
+       'schedule': 120,
+    },
+}

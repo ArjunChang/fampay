@@ -1,9 +1,14 @@
 # Fampay YT
 ### About Project
-This is a webserver built for FamPay Assignment. The server runs a task every **2min** to fetch videos related to cats and
-stores it in the database. All the basic and bonus requirements have been met.
+This is a webserver built for FamPay Assignment. The server runs a task every **2min** to fetch videos related to cats 
+and stores it in the database. All the basic and bonus requirements have been met.
 
 Built with Python (Django)
+
+### Pre Requisites
+1. Python
+2. Docker
+3. PostgreSQL
 
 ### Installation
 
@@ -12,42 +17,43 @@ Built with Python (Django)
    $ git clone git@github.com:ArjunChang/fampay.git
    $ cd fampay
    ```
-2. Create a Virtual Environment
+2. In `docker-compose.yml` file, set 
    ```sh
-   $ python3 -m venv fampay-venv
+   DEFAULT_YOUTUBE_API_KEY=<your_api_key>
    ```
-3. Install all packages
-   ```sh
-   $ pip install -r requirements.txt
-   ```
-4. Setup Postgres DB
-   ```sh
+3. Setup Postgres DB
+   ```shell
    $ sudo -u postgres createuser fampay
    $ sudo -u postgres createdb fampaydb
    $ sudo -u postgres psql
-   postgres=# alter user fampay with encrypted password 'fampay123' ;
-   postgres=# grant all privileges on database fampaydb to fampay ;
-   postgres=# \q
+   postgres=: alter user fampay with encrypted password 'fampay123' ;
+   postgres=: grant all privileges on database fampaydb to fampay ;
+   postgres=: \q
    ```
-5. Install and run redis: [Redis Installation and Setup Guide](https://redis.io/docs/getting-started/installation/)
-6. Create superuser
+4. Build the Docker Containers
    ```sh
-   $ pyhton manage.py createsuperuser
+   $ docker-compose build
    ```
-7. Run the server
+5. Run Migrations
    ```sh
-   $ python manage.py runserver
+   $ docker-compose run django python manage.py migrate
    ```
-8. Login to Django Admin and add API Keys in `admin/youtube/youtubeapikey/`
-9. Run Celery
+6. Create a Super User to log into django admin
    ```sh
-   $ python -m celery -A fampay worker -l info
+   $ docker-compose run django python manage.py createsuperuser
    ```
-10. Visit `http://localhost:8000/youtube/list` and browse!
+7. Start the Application
+   ```sh
+   $ docker-compose up
+   ```
+8. Login to django-admin and add multiple API Keys under YouTube Admin
+9. The Web App is ready to go!
+
 
 ### Usage
 1. `youtube/list` lists out all the database entries in a paginated manner
-2. You can search for title/description in the `nav-bar` or append query parameter `?search=<your-search>`, this will filter out entries that contains your search words
+2. You can search for title/description in the `nav-bar` or append query parameter `?search=<your-search>`, this will 
+   filter out entries that contains your search words
 3. You can sort the entries based on Title, Channel or Published Time by clicking on the respective headers
 
 
